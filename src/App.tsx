@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import GlobalStyle from './styles/global-css'
+import styled from 'styled-components'
+import { ToastContainer } from 'react-toastify'
+import { useEffect } from 'react'
+import { useState } from 'react'
+import { UserType } from './types/user-types'
+import Table from './components/table'
+import CreateUserForm from './components/create-user-form'
+import { fetchUsers } from './services/users-service'
+import 'react-toastify/dist/ReactToastify.css'
 
-function App() {
+const App: React.FC = () => {
+  const [users, setUsers] = useState<Array<UserType>>([])
+
+  useEffect(() => {
+    fetchUsers(setUsers)
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Container>
+      <GlobalStyle />
+      <ToastContainer position='bottom-right' rtl={true} />
+
+      <CreateUserForm users={users} />
+      {users.length > 0 && <Table users={users} />}
+    </Container>
+  )
 }
 
-export default App;
+const Container = styled.main`
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`
+
+export default App
